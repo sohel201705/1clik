@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Background Studio — Multi API</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18223a;--text:#eef3ff;--muted:#9eabc6;--line:#293653;--accent:#7c5cff;--good:#37d39b;--bad:#ff667d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080c18,#10182b 55%,#0b1020);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+.app{max-width:1200px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:18px}.brand h1{margin:0;font-size:25px}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}.badge{padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:#cbd5ff;background:#10172a;font-size:12px}
+.grid{display:grid;grid-template-columns:350px 1fr;gap:16px}.card{background:rgba(18,26,45,.94);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 12px 35px #0004}.card h2{font-size:15px;margin:0 0 14px}.drop{border:1.5px dashed #506184;border-radius:15px;padding:22px;text-align:center;cursor:pointer;background:#0e1628}.drop:hover{border-color:var(--accent)}.drop strong{display:block;margin-bottom:5px}.drop span{font-size:12px;color:var(--muted)}input[type=file]{display:none}.thumb{margin-top:13px;display:none}.thumb img{width:100%;max-height:240px;object-fit:contain;border-radius:12px;background:#0a0f1c;border:1px solid var(--line)}
+label{font-size:12px;color:#c9d2e9;display:block;margin:14px 0 7px}input[type=number],input[type=text],textarea,select{width:100%;border:1px solid var(--line);background:#0c1425;color:var(--text);border-radius:10px;padding:11px;outline:none}textarea{min-height:115px;resize:vertical}.row{display:flex;gap:8px}.row>*{flex:1}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}.chip{border:1px solid var(--line);background:#0e1628;color:#cbd5ff;padding:7px 9px;border-radius:9px;font-size:11px;cursor:pointer}.chip:hover{border-color:var(--accent)}
+button{border:0;border-radius:11px;padding:11px 14px;color:white;background:var(--accent);font-weight:700;cursor:pointer}.btn2{background:#202b45;border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;margin-top:14px}.actions button{flex:1}.api{border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:9px;background:#0e1628}.apihead{display:flex;justify-content:space-between;align-items:center;font-size:12px}.api input{margin-top:8px}.api small{color:var(--muted)}
+.status{display:flex;gap:10px;align-items:center;padding:12px;border-radius:12px;background:#0e1628;border:1px solid var(--line);margin-bottom:15px}.dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}.dot.good{background:var(--good)}.dot.bad{background:var(--bad)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.item{border:1px solid var(--line);background:#0d1526;border-radius:14px;overflow:hidden}.item img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.meta{padding:9px;font-size:11px;color:var(--muted)}.meta b{color:#e9edff}.mini{font-size:11px}.empty{text-align:center;color:var(--muted);padding:70px 20px;border:1px dashed var(--line);border-radius:15px}.progress{height:8px;background:#0a1020;border-radius:99px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:var(--accent);transition:.25s}.hidden{display:none!important}.footer{margin-top:16px;color:#77839f;font-size:11px;text-align:center}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><h1>Product Background Studio</h1><p>One product photo → multiple professional backgrounds → ZIP download</p></div>
+    <div class="badge">NO LOGIN • LOCAL SETTINGS</div>
+  </div>
+
+  <div class="grid">
+    <aside>
+      <section class="card">
+        <h2>1. Product Photo</h2>
+        <div class="drop" id="drop"><strong>Upload Product Photo</strong><span>PNG / JPG / WEBP • click or drag & drop</span></div>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp">
+        <div class="thumb" id="thumb"><img id="preview"></div>
+
+        <label>Number of Backgrounds</label>
+        <div class="row"><input id="count" type="number" min="1" max="50" value="10"><button class="btn2" id="preset">10</button></div>
+
+        <label>Background Style / Instructions</label>
+        <textarea id="prompt">Create a premium e-commerce product photo. Preserve the uploaded product exactly: same shape, size, proportions, color, print, label, cap, material and details. Change ONLY the background/environment. Make the product realistic, sharp, well-lit, centered and commercially attractive. No extra products, no text, no watermark, no logo changes.</textarea>
+
+        <div class="chips" id="chips">
+          <button class="chip">White Studio</button><button class="chip">Luxury Home</button><button class="chip">Modern Kitchen</button>
+          <button class="chip">Marble</button><button class="chip">Wooden Table</button><button class="chip">Outdoor</button>
+          <button class="chip">Minimal Beige</button><button class="chip">Lifestyle</button>
+          <button class="chip">Premium Commercial</button><button class="chip">Festive</button>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top:16px">
+        <h2>2. Multi-API Settings</h2>
+        <small style="color:var(--muted)">Add your own compatible image-generation API endpoints/keys. Keys are stored only in this browser.</small>
+        <div id="apis"></div>
+        <button class="btn2" id="addApi" style="margin-top:10px;width:100%">+ Add API</button>
+        <div class="actions"><button id="generate">Generate</button><button class="btn2" id="clear">Clear</button></div>
+      </section>
+    </aside>
+
+    <main>
+      <section class="card">
+        <div class="status"><span class="dot" id="dot"></span><div><b id="status">Ready</b><div class="mini" id="detail">Upload a product image to begin.</div></div></div>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div style="display:flex;justify-content:space-between;margin:13px 0 10px">
+          <h2 style="margin:0">Generated Results</h2>
+          <button id="zip" class="btn2" disabled>Download ZIP</button>
+        </div>
+        <div id="gallery" class="empty">Your generated product-background images will appear here.</div>
+      </section>
+    </main>
+  </div>
+  <div class="footer">Browser-only front end. For production use, proxy API requests through a server so secret API keys are not exposed.</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let sourceFile=null, sourceData=null, results=[], apiList=[];
+const backgrounds=["White Studio","Luxury Home","Modern Kitchen","Marble Surface","Wooden Table","Outdoor Lifestyle","Minimal Beige","Modern Living Room","Premium Commercial","Festive Setting","Clean Marketplace","Elegant Office","Natural Stone","Café Counter","Bright Lifestyle","Soft Pastel","Dark Luxury","Bathroom","Bedroom","Dining Area","Garden","Balcony","Travel Lifestyle","Professional Studio","Warm Home"];
+const stateKey="pbs_multi_api_v1";
+
+function save(){localStorage.setItem(stateKey,JSON.stringify({apis:apiList.map(x=>({name:x.name,url:x.url,key:x.key})),prompt:$("#prompt").value,count:$("#count").value}))}
+function load(){try{let s=JSON.parse(localStorage.getItem(stateKey)||"{}");apiList=s.apis||[];if(s.prompt)$("#prompt").value=s.prompt;if(s.count)$("#count").value=s.count}catch{};renderApis()}
+function renderApis(){
+ const box=$("#apis");box.innerHTML="";
+ if(!apiList.length)addApi(false);
+ apiList.forEach((a,i)=>{
+   let d=document.createElement("div");d.className="api";
+   d.innerHTML=`<div class="apihead"><b>API ${i+1}</b><button class="chip" data-del="${i}">Remove</button></div>
+   <input type="text" placeholder="Provider / API name" value="${esc(a.name||"")} " data-name="${i}">
+   <input type="text" placeholder="Endpoint URL (POST)" value="${esc(a.url||"")}" data-url="${i}">
+   <input type="text" placeholder="API Key" value="${esc(a.key||"")}" data-key="${i}">
+   <small>Expected: a JSON response containing an image URL/base64. See adapter note in code.</small>`;
+   box.appendChild(d);
+ });
+ $$("[data-del]").forEach(b=>b.onclick=()=>{apiList.splice(+b.dataset.del,1);save();renderApis()});
+ $$("[data-name]").forEach(x=>x.oninput=()=>{apiList[+x.dataset.name].name=x.value.trim();save()});
+ $$("[data-url]").forEach(x=>x.oninput=()=>{apiList[+x.dataset.url].url=x.value.trim();save()});
+ $$("[data-key]").forEach(x=>x.oninput=()=>{apiList[+x.dataset.key].key=x.value.trim();save()});
+}
+function addApi(render=true){apiList.push({name:"",url:"",key:""});if(render){save();renderApis()}}
+function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+
+$("#drop").onclick=()=>$("#file").click();
+$("#file").onchange=e=>handleFile(e.target.files[0]);
+$("#drop").ondragover=e=>{e.preventDefault();$("#drop").style.borderColor="var(--accent)"};
+$("#drop").ondragleave=()=>$("#drop").style.borderColor="";
+$("#drop").ondrop=e=>{e.preventDefault();$("#drop").style.borderColor="";handleFile(e.dataTransfer.files[0])};
+function handleFile(f){if(!f)return;if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert("Please select PNG, JPG or WEBP.");return}sourceFile=f;let r=new FileReader();r.onload=()=>{sourceData=r.result;$("#preview").src=sourceData;$("#thumb").style.display="block";$("#status").textContent="Ready";$("#detail").textContent=f.name};r.readAsDataURL(f)}
+
+$$(".chip").forEach(c=>{c.onclick=()=>{if(c.dataset.del)return;let t=c.textContent.trim();if(backgrounds.includes(t))$("#prompt").value += "\nPreferred background: "+t+". Preserve product exactly."}});
+$("#count").oninput=()=>{let n=Math.max(1,Math.min(50,+$("#count").value||1));$("#count").value=n;save()};
+$("#prompt").oninput=save;
+
+function setStatus(t,d,good=true){$("#status").textContent=t;$("#detail").textContent=d;$("#dot").className="dot "+(good?"good":"bad")}
+function progress(n,total){$("#bar").style.width=Math.round(n/total*100)+"%"}
+
+async function generate(){
+ if(!sourceData){alert("Upload a product photo first.");return}
+ const n=Math.max(1,Math.min(50,+$("#count").value||10));
+ results=[];renderGallery();$("#generate").disabled=true;$("#zip").disabled=true;
+ let usable=apiList.filter(a=>a.url&&a.key);
+ if(!usable.length){
+   setStatus("No API configured","Add at least one compatible image API endpoint and key.",false);
+   $("#generate").disabled=false;return;
+ }
+ for(let i=0;i<n;i++){
+   setStatus("Generating "+(i+1)+" / "+n,"Trying available APIs...");
+   let ok=null;
+   const bg=backgrounds[i%backgrounds.length];
+   for(let j=0;j<usable.length;j++){
+     const api=usable[(i+j)%usable.length];
+     try{ok=await callAdapter(api,bg);if(ok)break}catch(err){console.warn("API failed",api.name,err)}
+   }
+   if(ok){results.push({blob:ok.blob,name:`product-background-${String(i+1).padStart(2,"0")}.png`,bg});}
+   else{results.push({blob:null,name:`product-background-${String(i+1).padStart(2,"0")}.png`,bg,error:true})}
+   progress(i+1,n);renderGallery();
+ }
+ const success=results.filter(x=>x.blob).length;
+ setStatus("Completed",`${success} of ${n} images generated.` ,success>0);
+ $("#generate").disabled=false;$("#zip").disabled=success===0;
+}
+
+async function callAdapter(api,bg){
+ const body={
+   prompt: $("#prompt").value+"\n\nSpecific background for this variation: "+bg,
+   image: sourceData,
+   background: bg,
+   output_format:"png"
+ };
+ const headers={"Content-Type":"application/json","Authorization":"Bearer "+api.key,"X-API-Key":api.key};
+ const res=await fetch(api.url,{method:"POST",headers,body:JSON.stringify(body)});
+ if(!res.ok)throw new Error("HTTP "+res.status);
+ const data=await res.json();
+ const raw=data.image_url||data.url||data.image||data.output||data.data?.[0]?.url||data.data?.[0]?.b64_json||data.images?.[0];
+ if(!raw)throw new Error("No image URL/base64 found in response.");
+ let blob;
+ if(typeof raw==="string"&&raw.startsWith("data:")) blob=dataURLtoBlob(raw);
+ else if(typeof raw==="string"&&/^https?:\/\//.test(raw)){let rr=await fetch(raw);blob=await rr.blob()}
+ else if(typeof raw==="string"){blob=dataURLtoBlob("data:image/png;base64,"+raw)}
+ else throw new Error("Unsupported image response.");
+ return {blob};
+}
+function dataURLtoBlob(u){let [h,b]=u.split(",");let mime=(h.match(/:(.*?);/)||[])[1]||"image/png";let bin=atob(b),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:mime})}
+
+function renderGallery(){
+ const g=$("#gallery");if(!results.length){g.className="empty";g.textContent="Your generated product-background images will appear here.";return}
+ g.className="gallery";g.innerHTML="";
+ results.forEach((r,i)=>{
+   let d=document.createElement("div");d.className="item";
+   if(r.blob){let img=document.createElement("img");img.src=URL.createObjectURL(r.blob);d.appendChild(img)}
+   else{let x=document.createElement("div");x.style.cssText="aspect-ratio:1/1;display:grid;place-items:center;color:var(--bad);font-size:12px";x.textContent="Generation failed";d.appendChild(x)}
+   let m=document.createElement("div");m.className="meta";m.innerHTML=`<b>#${i+1}</b> ${esc(r.bg)}<br><span>${r.blob?"Ready":"Failed"}</span>`;
+   if(r.blob){let b=document.createElement("button");b.className="chip";b.textContent="Download";b.style.marginTop="7px";b.onclick=()=>download(r.blob,r.name);m.appendChild(b)}
+   d.appendChild(m);g.appendChild(d);
+ })
+}
+function download(blob,name){let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$("#zip").onclick=async()=>{
+ const good=results.filter(r=>r.blob);if(!good.length)return;
+ const zip=await makeZip(good);download(zip,"product-backgrounds.zip");
+}
+function crc32(bytes){let c=~0;for(let b of bytes){c^=b;for(let k=0;k<8;k++)c=(c>>>1)^((c&1)?0xEDB88320:0)}return (~c)>>>0}
+function u16(n){return new Uint8Array([n&255,n>>>8&255])}function u32(n){return new Uint8Array([n&255,n>>>8&255,n>>>16&255,n>>>24&255])}
+async function makeZip(files){
+ let chunks=[],central=[],offset=0;
+ for(const f of files){
+   const data=new Uint8Array(await f.blob.arrayBuffer()),name=new TextEncoder().encode(f.name),crc=crc32(data);
+   let local=new Uint8Array(30+name.length);local.set([80,75,3,4,20,0,0,0,0,0,0,0,0,0],0);local.set(u32(crc),14);local.set(u32(data.length),18);local.set(u32(data.length),22);local.set(u16(name.length),26);local.set(u16(0),28);local.set(name,30);
+   chunks.push(local,data);
+   let cen=new Uint8Array(46+name.length);cen.set([80,75,1,2,20,0,20,0,0,0,0,0,0,0],0);cen.set(u32(crc),16);cen.set(u32(data.length),20);cen.set(u32(data.length),24);cen.set(u16(name.length),28);cen.set(u16(0),30);cen.set(u16(0),32);cen.set(u16(0),34);cen.set(u16(0),36);cen.set(u32(0),38);cen.set(u32(offset),42);cen.set(name,46);central.push(cen);offset+=local.length+data.length;
+ }
+ const centralSize=central.reduce((a,x)=>a+x.length,0),end=new Uint8Array(22);end.set([80,75,5,6,0,0,0,0],0);end.set(u16(files.length),8);end.set(u16(files.length),10);end.set(u32(centralSize),12);end.set(u32(offset),16);
+ return new Blob([...chunks,...central,end],{type:"application/zip"});
+}
+$("#generate").onclick=generate;$("#clear").onclick=()=>{sourceFile=null;sourceData=null;results=[];$("#file").value="";$("#thumb").style.display="none";$("#bar").style.width="0";renderGallery();setStatus("Ready","Upload a product image to begin.")};
+$("#addApi").onclick=()=>addApi(true);
+load();
+</script>
+</body>
+</html>
